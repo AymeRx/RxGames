@@ -3,7 +3,7 @@ import { GameContext } from '../context/gameContext'
 
 export default function JoinGameModal() {
 
-  const { modalState, toggleModals } = useContext(GameContext);
+  const { modalState, toggleModals, joinGame } = useContext(GameContext);
 
   const [validation, setValidation] = useState("");
 
@@ -23,22 +23,31 @@ export default function JoinGameModal() {
       return;
     }
     try {
-      const cred = await joinGame(
-        inputs.current[0].value
-      )
-      formRef.current.reset();
-      setValidation("")
-      console.log(cred)
-    } catch (err) {
-
+      const cred = joinGame(inputs.current[0].value);
+      if (cred === inputs.current[0].value) {
+        setValidation("");
+        toggleModals("close");
+      } else if (cred === 0) {
+        setValidation("La game n'existe pas");
+      } else {
+        console.log(cred);
+        setValidation(cred);
+      }
+    } catch (error) {
+      setValidation(error);
     }
   }
+
+  const closeModal = () => {
+    setValidation("");
+    toggleModals("close");
+  };
 
   return (
     <>
       {modalState.joinGameModal && (
         <div className="position-fixed top-0 vw-100 vh-100">
-          <div onClick={() => toggleModals("close")} className="w-100 h-100 bg-dark bg-opacity-75"></div>
+          <div onClick={closeModal} className="w-100 h-100 bg-dark bg-opacity-75"></div>
           <div className="position-absolute top-50 start-50 translate-middle">
             <div className="modal-dialog">
               <div className="modal-content">
@@ -46,9 +55,9 @@ export default function JoinGameModal() {
                   <form
                     ref={formRef}
                     onSubmit={handleForm} className='creater-game-form'>
-                    <input ref={addInputs} type="number" />
+                    <input placeholder="Code de la game" ref={addInputs} type="number" />
                     <p className='text-danger mt-1'>{validation}</p>
-                    <button onClick={() => toggleModals("close")} className="btn btn-primary">Rester dans ce lobby</button>
+                    <button onClick={closeModal} className="btn btn-primary">Rester dans ce lobby</button>
                     <button className="btn btn-danger ms-2">Rejoindre cette game</button>
                   </form>
                 </div>
