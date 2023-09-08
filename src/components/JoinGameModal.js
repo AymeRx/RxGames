@@ -1,39 +1,42 @@
 import React, { useContext, useRef, useState } from 'react'
 import { GameContext } from '../context/gameContext'
 
-export default function JoinGameModal() {
+export default function JoinGameModal({ gameId, playerName, setGameId, setPlayerName }) {
 
-  const { modalState, toggleModals, joinGame } = useContext(GameContext);
+  const { modalState, toggleModals, doesGameExist, nextEmptySeat, putPlayerInSeatIndex, quitGame } = useContext(GameContext);
 
   const [validation, setValidation] = useState("");
 
-  const inputs = useRef([]);
-  const addInputs = e => {
-    if (e && !inputs.current.includes(e)) {
-      inputs.current.push(e);
-    }
-  }
-
-  const formRef = useRef();
+  const codeRef = useRef(null);
+  const nameRef = useRef(null);
 
   const handleForm = async (e) => {
-    e.preventDefault()
-    if (inputs.current[0].value.length !== 4) {
-      setValidation("Le code d'une game contient 4 chiffres")
-      return;
-    }
+    e.preventDefault();
+    const newGameCode = codeRef.current.value;
+    const newName = nameRef.current.value;
+
     try {
-      const cred = joinGame(inputs.current[0].value);
-      if (cred === inputs.current[0].value) {
-        setValidation("");
-        toggleModals("close");
-      } else if (cred === 0) {
-        setValidation("La game n'existe pas");
-      } else {
-        console.log(cred);
-        setValidation(cred);
-      }
+      if (newGameCode.length !== 4)
+        return setValidation("Le code d'une game contient 4 chiffres");
+
+      if (newName.length <= 4)
+        return setValidation("Il est court ton pseudo frr");
+
+      if (!await doesGameExist(newGameCode))
+        return setValidation("La game n'existe pas chef");
+
+      const nextSeat = await nextEmptySeat(newGameCode);
+      if (nextSeat === -1)
+        return setValidation("La game est pleine chef");
+
+      quitGame(gameId, playerName);
+      putPlayerInSeatIndex(newGameCode, newName, nextSeat);
+      setGameId(newGameCode);
+      setPlayerName(newName);
+      setValidation("");
+      toggleModals("close");
     } catch (error) {
+      console.error(error);
       setValidation(error);
     }
   }
@@ -52,10 +55,9 @@ export default function JoinGameModal() {
             <div className="modal-dialog">
               <div className="modal-content">
                 <div className='modal-body'>
-                  <form
-                    ref={formRef}
-                    onSubmit={handleForm} className='creater-game-form'>
-                    <input placeholder="Code de la game" ref={addInputs} type="number" />
+                  <form onSubmit={handleForm} className='creater-game-form'>
+                    <input placeholder="Code de la game" ref={codeRef} type="number" />
+                    <input placeholder="Nom du joueur" ref={nameRef} type="Text" />
                     <p className='text-danger mt-1'>{validation}</p>
                     <button onClick={closeModal} className="btn btn-primary">Rester dans ce lobby</button>
                     <button className="btn btn-danger ms-2">Rejoindre cette game</button>
