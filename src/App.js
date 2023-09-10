@@ -4,31 +4,36 @@ import Home from "./pages/Home"
 import Navbar from "./components/Navbar";
 import CreateGameModal from "./components/CreateGameModal";
 import JoinGameModal from "./components/JoinGameModal";
+import StartGameModal from "./components/StartGameModal"
+import GameStateUpdater from "./components/GameStateUpdater"
+import RoleModal from "./components/RoleModal"
 
 function App() {
-  const [gameId, setGameId] = useState(null);
-  const [playerName, setPlayerName] = useState(null);
 
-  const handleSetPlayerName = (newPlayerName) => {
-    setPlayerName(newPlayerName);
-    localStorage.setItem("playerName", newPlayerName);
-  };
+    const [gameVal, setGameVal] = useState({
+        gameId : null,
+        gameState : null,
+        playerInfo : {
+            name : null,
+            id : null,
+            role : null,
+            vote : null
+        }
+    });
 
-  const handleSetGameId = (newGameId) => {
-    setGameId(newGameId);
-    localStorage.setItem("gameId", newGameId);
-  };
-
-  return (
-    <>
-      <CreateGameModal gameId={gameId} playerName={playerName} setGameId={handleSetGameId} setPlayerName={handleSetPlayerName} />
-      <JoinGameModal gameId={gameId} playerName={playerName} setGameId={handleSetGameId} setPlayerName={handleSetPlayerName} />
-      <Navbar gameId={gameId} playerName={playerName} />
-      <Routes>
-        <Route path="/" element={<Home />} />
-      </Routes>
-    </>
-  );
+    return (
+        <>
+            <StartGameModal gameVal={gameVal} setGameVal={setGameVal} />
+            <GameStateUpdater gameVal={gameVal} setGameVal={setGameVal} />
+            <RoleModal gameVal={gameVal} setGameVal={setGameVal}/>
+            <Navbar gameVal={gameVal} setGameVal={setGameVal} />
+            <CreateGameModal gameVal={gameVal} setGameVal={setGameVal} />
+            <JoinGameModal gameVal={gameVal} setGameVal={setGameVal} />
+            <Routes>
+                <Route path="/" element={<Home />} />
+            </Routes>
+        </>
+    );
 }
 
 export default App;
