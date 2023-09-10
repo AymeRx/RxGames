@@ -17,7 +17,8 @@ function App() {
             name : null,
             id : null,
             role : null,
-            vote : null
+            vote : null,
+            roleInfo : null,
         }
     });
 

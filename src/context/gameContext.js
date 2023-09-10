@@ -1,10 +1,12 @@
-import React, {createContext, useState} from "react"
+import React, {createContext, useContext, useState} from "react"
 import {db} from "../firebase-config";
 import {child, get, push, ref, set} from "firebase/database"
+import { RoleContext } from './roleContext';
 
 export const GameContext = createContext(null);
 
 export function GameContextProvider(props) {
+    const { initAmoureux, initDoubleFace, initDroide } = useContext(RoleContext);
 
     function shuffleArray(array) {
         for (let i = array.length - 1; i > 0; i--) {
@@ -15,12 +17,12 @@ export function GameContextProvider(props) {
     }
 
     const roleList = [
-        "Imposteur",
-        "Droide",
-        "Serpentin",
-        "Double-face",
-        "Super-héros",
-        "Amoureux",
+        ["Imposteur", null],
+        ["Droide", initDroide],
+        ["Serpentin", null],
+        ["Double-face", initDoubleFace],
+        ["Super-héros", null],
+        ["Amoureux", initAmoureux],
     ];
 
     const generateRoles = async (gameId) => {
@@ -28,17 +30,28 @@ export function GameContextProvider(props) {
             const rolesToAssign = shuffleArray(roleList.copyWithin());
             while (rolesToAssign.length > 5)
                 rolesToAssign.pop();
-            if (rolesToAssign.indexOf("Imposteur") === -1)
-                rolesToAssign[1] = "Imposteur";
-            if (rolesToAssign.indexOf("Super-héros") === -1)
-                rolesToAssign[2] = "Super-héros";
+            if (rolesToAssign.map(function(x) {return x[0];}).indexOf("Imposteur") === -1) {
+                if (rolesToAssign[0][0] === "Super-héros")
+                    rolesToAssign[1] = ["Imposteur", null];
+                else
+                    rolesToAssign[0] = ["Imposteur", null];
+            }
+            if (rolesToAssign.map(function(x) {return x[0];}).indexOf("Super-héros") === -1) {
+                if (rolesToAssign[1][0] === "Imposteur")
+                    rolesToAssign[0] = ["Super-héros", null];
+                else
+                    rolesToAssign[1] = ["Super-héros", null];
+            }
             shuffleArray(rolesToAssign);
+            rolesToAssign[0] = ["Droide", initDroide];
             for (let i = 0; i < 5; i++) {
                 const roleRef = ref(db, `games/${gameId}/player/${i}/role/`);
-                await set(roleRef, rolesToAssign[i]);
+                await set(roleRef, rolesToAssign[i][0]);
+                if (rolesToAssign[i][1] != null)
+                    await rolesToAssign[i][1](gameId, i);
             }
         } catch (error) {
-            console.error("Erreur à la création des roles", error);
+            console.error("Erreur à la création des roles : ", error);
         }
     }
 
@@ -64,37 +77,30 @@ export function GameContextProvider(props) {
                 return nextSeat;
             }
         } catch (error) {
-            console.error("Tu peux pas join c'est bizzare :", error);
+            console.error("Erreur à la tentative de savoir s'il reste des places : ", error);
         }
         return -1;
     }
 
-    const quitGame = async (gameId, playerName) => {
-        if (gameId === null || playerName === null)
+    const quitGame = async (gameId, playerId) => {
+        if (gameId === null || playerId === null)
             return;
         try {
-            const gameRef = ref(db, `games/${gameId}`);
-
-            const gameSnapshot = await get(gameRef);
-            const gameData = gameSnapshot.val();
-
-            const playerIndex = gameData.player.findIndex(
-                (player) => player.name === playerName
-            );
-
-            if (playerIndex !== -1) {
-                gameData.player[playerIndex] = {
-                    name: false,
-                    role: false,
-                    vote: false,
-                    points: 0
-                };
-                await set(gameRef, gameData);
-            } else {
-                console.error("Tu peux pas quitter une game dans laquelle tu n'es pas");
-            }
+            const gameRef = ref(db, `games/${gameId}/player/${playerId}`);
+            await set(gameRef, false);
         } catch (error) {
             console.error("Erreur lors de la réinitialisation du joueur :", error);
+        }
+    };
+
+    const getPlayerNameById = async (gameId, playerId) => {
+        if (gameId === null || playerId === null)
+            return;
+        try {
+            const playerNameRef = await ref(db, `games/${gameId}/player/${playerId}/name`);
+            return (await get(playerNameRef)).val();
+        } catch (error) {
+            console.error("Erreur lors de la recuperation du nom du joeur:", error);
         }
     };
 
@@ -121,7 +127,7 @@ export function GameContextProvider(props) {
 
             return true;
         } catch (error) {
-            console.error("Erreur lors de la vérification de l'existence de la game :", error);
+            console.error("Erreur lors fu changment d'etat ", error);
             return false;
         }
     };
@@ -183,7 +189,7 @@ export function GameContextProvider(props) {
     }
 
     return (
-        <GameContext.Provider value={{ modalState, toggleModals, createGame, doesGameExist, nextEmptySeat, putPlayerInSeatIndex, quitGame, setGameState, generateRoles }}>
+        <GameContext.Provider value={{ modalState, toggleModals, createGame, doesGameExist, nextEmptySeat, putPlayerInSeatIndex, quitGame, setGameState, generateRoles, getPlayerNameById }}>
             {props.children}
         </GameContext.Provider>
     )

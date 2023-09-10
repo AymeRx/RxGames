@@ -1,7 +1,7 @@
 import React, { useContext, useRef, useState } from 'react'
 import { GameContext } from '../context/gameContext'
 
-export default function JoinGameModal({ gameVal }) {
+export default function JoinGameModal({ gameVal, setGameVal }) {
 
     const { modalState, toggleModals, doesGameExist, nextEmptySeat, putPlayerInSeatIndex, quitGame } = useContext(GameContext);
 
@@ -31,10 +31,16 @@ export default function JoinGameModal({ gameVal }) {
 
             quitGame(gameVal.gameId, gameVal.playerInfo.name);
             putPlayerInSeatIndex(newGameCode, newName, nextSeat);
-            gameVal.playerInfo.id = nextSeat;
-            gameVal.gameId = newGameCode;
-            gameVal.playerInfo.name = newName;
-            gameVal.gameState = "Pending";
+            setGameVal({
+                gameId : newGameCode,
+                gameState : "Pending",
+                playerInfo : {
+                    name : newName,
+                    id : nextSeat,
+                    role : null,
+                    vote : null
+                }
+            });
             closeModal();
         } catch (error) {
             console.error(error);
