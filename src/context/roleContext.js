@@ -57,16 +57,17 @@ export function RoleContextProvider(props) {
 
             const actionList = shuffleArray([
                 "Fais une Dominego et dis que ca bug",
-                "Oll ine un allié",
+                "All in un allié",
                 "Insulte ton allié le plus proche",
                 "Miaule",
-                "Met un auto à l'ennemi le plus proche",
-                "Roam sur la lane la plus proche",
+                "Met une oto à l'ennemi le plus proche",
+                "Rom sur la lane la plus proche",
                 "utilise l'un de tes deux sumoonneur s'il t'en reste un",
                 "complimente le premier de la game",
-                "vole l'un des camps de ton jungle si tu n'es pas le jungle",
+                "vole l'un des camps de ton geungle si tu n'es pas le geungle",
                 "rate le prochain canon et plains toi",
-                "obligé de all in l'adversaire, soit il meurt soit tu meurs"
+                "Fais un combat a mort avec l'adversaire le plus proche",
+                "lance un debat à la milo"
             ]);
 
             await set(roleInfoRef, {action : actionList});

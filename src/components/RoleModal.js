@@ -53,12 +53,34 @@ export default function RoleModal({gameVal, setGameVal}) {
         return () => {unsubscribeRoleInfo();};
     }, [gameVal.gameId, gameVal.playerInfo.id, gameVal.playerInfo.role, setGameVal, getPlayerNameById]);
 
+    const speakText = (text) => {
+        if ('speechSynthesis' in window) {
+            const synth = window.speechSynthesis;
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'fr-FR';
+            synth.speak(utterance);
+        } else {
+            console.error("La synthèse vocale n'est pas prise en charge par ce navigateur.");
+        }
+    };
+
+    useEffect(() => {
+        if (currentIndexRole >= 0 && gameVal.gameState === "Started" && gameVal.playerInfo.roleInfo) {
+            const actions = gameVal.playerInfo.roleInfo.action;
+            if (actions && currentIndexRole >= 1) {
+                speakText(actions[currentIndexRole % actions.length]);
+            }
+        }
+    }, [currentIndexRole, gameVal.gameState, gameVal.playerInfo.roleInfo]);
+
     useEffect(() => {
         const intervalId = setInterval(() => {
-            setCurrentIndexRole((prevIndex) => (prevIndex + 1));
-        }, (Math.floor(Math.random() * 5 + 5)) * 60 * 1000);
+            if (gameVal.gameState === "Started")
+                setCurrentIndexRole((prevIndex) => (prevIndex + 1));
+            }, (Math.floor(Math.random() * 5 + 5)) * 60 * 1000);
+        // }, 6 * 1000);
         return () => clearInterval(intervalId);
-    }, []);
+    }, [gameVal.gameState]);
 
     const rolePicturPath = (role) => {
         switch (role) {
@@ -88,24 +110,14 @@ export default function RoleModal({gameVal, setGameVal}) {
             case "Serpentin":
                 return "Serpentin : Gagner la game en ayant le plus de morts et de dégâts de sa team"
             case "Double-face":
-                return "Double-face : Change de rôle aléatoirement. Doit gagner la game en tant que gentil ou perdre en imposteur"
+                return "Double-face : Change de rôle aléatoirement. Doit gagner la game en tant que gentil ou perdre en imposteur\n\n"
             case "Super-héros":
                 return "Super-héros : Gagner la game en ayant le plus de dégâts, d'assistances et de kills. Gravement pénalisé en cas de défaite"
             case "Amoureux":
-                return "Amoureux : Tu dois mourir chaque fois que ton amoureux décede, par compassion. Le nom du chanceux est " + gameVal.playerInfo.roleInfo.loverName + "🥰"
+                return "Amoureux : Tu dois mourir chaque fois que ton amoureux décede, par compassion. Le nom du chanceux est "
+                    + gameVal.playerInfo.roleInfo.loverName + "🥰"
             default:
                 return null
-        }
-    };
-
-    const speakText = (text) => {
-        if ('speechSynthesis' in window) {
-            const synth = window.speechSynthesis;
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'fr-FR';
-            synth.speak(utterance);
-        } else {
-            console.error("La synthèse vocale n'est pas prise en charge par ce navigateur.");
         }
     };
 
@@ -126,18 +138,9 @@ export default function RoleModal({gameVal, setGameVal}) {
                     />
                     <p style={{color: "white", fontSize: "30px", position: 'absolute', top: '10vh', left: '45vw'}}>
                         {roleDescrpition(gameVal.playerInfo.role)}
+                        <br/><br/>
+                        {currentIndexRole ? (gameVal.playerInfo.roleInfo.action[currentIndexRole % gameVal.playerInfo.roleInfo.action.length]) : null}
                     </p>
-                    {gameVal.playerInfo.role === "Droide" ?
-                        <div>
-                            <p style={{color: "white", fontSize: "30px", position: 'absolute', top: '40vh', left: '45vw'}}>
-                                {gameVal.playerInfo.roleInfo.action[currentIndexRole]}
-                            </p>
-                            <button style={{position: 'absolute', top: '35vh', left: '45vw'}}
-                                    onClick={() => speakText(gameVal.playerInfo.roleInfo.action[currentIndexRole])}>
-                                Lire à haute voix
-                            </button>
-                        </div>
-                        : null}
                 </div>
             ) : null}
         </>
