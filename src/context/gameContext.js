@@ -158,7 +158,7 @@ export function GameContextProvider(props) {
             await setGameState(newGameId, "Pending");
             return newGameId;
         } catch (error) {
-            console.log("Erreur lors de la création du jeu :", error);
+            console.error("Erreur lors de la création du jeu :", error);
             return error;
         }
     };
@@ -188,7 +188,7 @@ export function GameContextProvider(props) {
     }
 
     return (
-        <GameContext.Provider value={{ modalState, toggleModals, createGame, doesGameExist, nextEmptySeat, putPlayerInSeatIndex, quitGame, setGameState, generateRoles, getPlayerNameById }}>
+        <GameContext.Provider value={{ modalState, toggleModals, createGame, doesGameExist, nextEmptySeat, putPlayerInSeatIndex, quitGame, setGameState, generateRoles, getPlayerNameById, roleList }}>
             {props.children}
         </GameContext.Provider>
     )

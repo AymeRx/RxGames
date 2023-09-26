@@ -12,9 +12,10 @@ import Amoureux from "../assets/Amoureux.png";
 
 export default function RoleModal({gameVal, setGameVal}) {
 
-    const {getPlayerNameById} = useContext(GameContext);
+    const {getPlayerNameById, setGameState} = useContext(GameContext);
 
     const [currentIndexRole, setCurrentIndexRole] = useState(0);
+    const [validation, setValidation] = useState("");
 
     useEffect(() => {
         const gameRef = ref(db, `games/${gameVal.gameId}/player/${gameVal.playerInfo.id}/role`);
@@ -77,8 +78,7 @@ export default function RoleModal({gameVal, setGameVal}) {
         const intervalId = setInterval(() => {
             if (gameVal.gameState === "Started")
                 setCurrentIndexRole((prevIndex) => (prevIndex + 1));
-            }, (Math.floor(Math.random() * 5 + 5)) * 60 * 1000);
-        // }, 6 * 1000);
+        }, (Math.floor(Math.random() * 5 + 5)) * 60 * 1000);
         return () => clearInterval(intervalId);
     }, [gameVal.gameState]);
 
@@ -121,6 +121,23 @@ export default function RoleModal({gameVal, setGameVal}) {
         }
     };
 
+    const endGame = async () => {
+        try {
+            setGameState(gameVal.gameId, "End");
+            setGameVal({
+                    gameId: gameVal.gameId,
+                    gameState: "End",
+                    playerInfo: gameVal.playerInfo
+                }
+            );
+
+            setValidation("");
+        } catch (error) {
+            console.error(error)
+            setValidation(error)
+        }
+    }
+
     return (
         <>
             {gameVal.playerInfo.role != null && gameVal.gameState === "Started" ? (
@@ -136,11 +153,25 @@ export default function RoleModal({gameVal, setGameVal}) {
                             left: '5vw',
                         }}
                     />
-                    <p style={{color: "white", fontSize: "30px", position: 'absolute', top: '10vh', left: '45vw'}}>
+                    <p
+                        style={{
+                            color: "white",
+                            fontSize: "30px",
+                            position: 'absolute',
+                            top: '10vh',
+                            left: '45vw'
+                        }}
+                    >
                         {roleDescrpition(gameVal.playerInfo.role)}
                         <br/><br/>
                         {currentIndexRole ? (gameVal.playerInfo.roleInfo.action[currentIndexRole % gameVal.playerInfo.roleInfo.action.length]) : null}
                     </p>
+                    <button className="btn-primary">
+                    </button>
+                    <div className="position-absolute top-50 start-50 translate-middle">
+                        <p className='text-danger mt-1'>{validation}</p>
+                        <button onClick={() => endGame()} className="btn btn-danger ms-2">Fin de partie</button>
+                    </div>
                 </div>
             ) : null}
         </>

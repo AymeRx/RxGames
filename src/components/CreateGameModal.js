@@ -33,7 +33,7 @@ export default function CreateGameModal({ gameVal, setGameVal }) {
             generateRoles(newGameCode);
             closeModal();
         } catch (error) {
-            console.log(error)
+            console.error(error)
             setValidation(error)
         }
     }

@@ -17,7 +17,7 @@ export default function GameStateUpdater({ gameVal, setGameVal }) {
         return () => {
             unsubscribe();
         };
-    }, [gameVal.gameState]);
+    }, [gameVal.gameId, setGameVal]);
 
     return null;
 }
