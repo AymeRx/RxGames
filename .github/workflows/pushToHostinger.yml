@@ -27,7 +27,7 @@ jobs:
       - name: Upload to FTP
         uses: SamKirkland/FTP-Deploy-Action@4.0.0
         with:
-          server: ftp://tom-pere.fun
+          server: tom-pere.fun
           username: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASSWORD }}
           serverDir: ${{ secrets.FTP_REMOTE_PATH }}
