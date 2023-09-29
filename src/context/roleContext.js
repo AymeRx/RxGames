@@ -9,6 +9,7 @@ export function RoleContextProvider(props) {
     const getPlayerRoleInfo = async (gameId, playerId) => {
         if (gameId === null || playerId === null)
             return;
+
         try {
             const roleInfoRef = await ref(db, `games/${gameId}/player/${playerId}/roleInfo/`);
             return await get(roleInfoRef);

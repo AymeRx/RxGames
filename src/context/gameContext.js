@@ -116,10 +116,10 @@ export function GameContextProvider(props) {
 
     const setGameState = async (gameId, gameState) => {
         try {
-            const gameRef = ref(db, `games/${gameId}`);
-
+            const gameRef = await ref(db, `games/${gameId}`);
             const gameSnapshot = await get(gameRef);
             const gameData = gameSnapshot.val();
+
             gameData.gameState = gameState;
 
             await set(gameRef, gameData);

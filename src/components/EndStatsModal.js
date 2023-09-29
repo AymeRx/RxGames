@@ -22,14 +22,13 @@ export default function EndStatsModal({ gameVal, setGameVal }) {
         e.preventDefault();
 
         try {
-            console.log('SATAS :', stats);
-
-            setGameState(gameVal.gameId, 'Vote');
+            pushEndStats(gameVal.gameId, stats);
             setGameVal((prevGameVal) => ({
                 ...prevGameVal,
-                gameState: 'Vote',
+                stats: stats,
+                gameState: 'Vote'
             }));
-            pushEndStats(gameVal.gameId, stats);
+            setGameState(gameVal.gameId, 'Vote');
             setValidation('');
         } catch (error) {
             console.error(error);
@@ -60,85 +59,89 @@ export default function EndStatsModal({ gameVal, setGameVal }) {
 
     return (
         <>
-            {gameVal.gameState === 'End' ? (
-                <Form onSubmit={handleForm} className='creater-game-form'>
-                    <Form.Group controlId='Victoire ou defaite : '>
-                        <Form.Label style={{color:"white"}}>Victoire ou defaite : </Form.Label>
-                        <Form.Control
-                            as='select'
-                            value={stats.win}
-                            onChange={(e) => setStats((prevStats) => ({...prevStats, win: e.target.value}))}
-                        >
-                            <option value={true}>
-                                Victoire
-                            </option>
-                            <option value={false}>
-                                Defaite
-                            </option>
-                        </Form.Control>
-                    </Form.Group>
-                    <Form.Group controlId='Le plus de kills : '>
-                        <Form.Label style={{color:"white"}}>Le plus de kills : </Form.Label>
-                        <Form.Control
-                            as='select'
-                            value={stats.moreKill}
-                            onChange={(e) => setStats((prevStats) => ({...prevStats, moreKill: e.target.value}))}
-                        >
-                            {players.map((player) => (
-                                <option key={player} value={player}>
-                                    {player}
+            {gameVal.gameState === 'End' ? gameVal.playerInfo.id === 0 ? (
+                    <Form onSubmit={handleForm} className='creater-game-form'>
+                        <Form.Group controlId='Victoire ou defaite : '>
+                            <Form.Label style={{color:"white"}}>Victoire ou defaite : </Form.Label>
+                            <Form.Control
+                                as='select'
+                                value={stats.win}
+                                onChange={(e) => setStats((prevStats) => ({...prevStats, win: e.target.value}))}
+                            >
+                                <option value={true}>
+                                    Victoire
                                 </option>
-                            ))}
-                        </Form.Control>
-                    </Form.Group>
-                    <Form.Group controlId='Le plus de morts : '>
-                        <Form.Label style={{color:"white"}}>Le plus de morts : </Form.Label>
-                        <Form.Control
-                            as='select'
-                            value={stats.moreDeath}
-                            onChange={(e) => setStats((prevStats) => ({...prevStats, moreDeath: e.target.value}))}
-                        >
-                            {players.map((player) => (
-                                <option key={player} value={player}>
-                                    {player}
+                                <option value={false}>
+                                    Defaite
                                 </option>
-                            ))}
-                        </Form.Control>
-                    </Form.Group>
-                    <Form.Group controlId='Le plus de dégâts : '>
-                        <Form.Label style={{color:"white"}}>Le plus de dégâts : </Form.Label>
-                        <Form.Control
-                            as='select'
-                            value={stats.moreDamage}
-                            onChange={(e) => setStats((prevStats) => ({...prevStats, moreDamage: e.target.value}))}
-                        >
-                            {players.map((player) => (
-                                <option key={player} value={player}>
-                                    {player}
-                                </option>
-                            ))}
-                        </Form.Control>
-                    </Form.Group>
-                    <Form.Group controlId="Le plus d'assists : ">
-                        <Form.Label style={{color:"white"}}>Le plus d'assists : </Form.Label>
-                        <Form.Control
-                            as='select'
-                            value={stats.moreAssist}
-                            onChange={(e) => setStats((prevStats) => ({...prevStats, moreAssist: e.target.value}))}
-                        >
-                            {players.map((player) => (
-                                <option key={player} value={player}>
-                                    {player}
-                                </option>
-                            ))}
-                        </Form.Control>
-                    </Form.Group>
-                    <p className='text-danger mt-1'>{validation}</p>
-                    <Button variant='danger' type='submit' className='ms-2'>
-                        Confirmer les stats
-                    </Button>
-                </Form>
-            ) : null}
+                            </Form.Control>
+                        </Form.Group>
+                        <Form.Group controlId='Le plus de kills : '>
+                            <Form.Label style={{color:"white"}}>Le plus de kills : </Form.Label>
+                            <Form.Control
+                                as='select'
+                                value={stats.moreKill}
+                                onChange={(e) => setStats((prevStats) => ({...prevStats, moreKill: e.target.value}))}
+                            >
+                                {players.map((player) => (player !== false ? (
+                                    <option key={player} value={player}>
+                                        {player}
+                                    </option>
+                                ) : null))}
+                            </Form.Control>
+                        </Form.Group>
+                        <Form.Group controlId='Le plus de morts : '>
+                            <Form.Label style={{color:"white"}}>Le plus de morts : </Form.Label>
+                            <Form.Control
+                                as='select'
+                                value={stats.moreDeath}
+                                onChange={(e) => setStats((prevStats) => ({...prevStats, moreDeath: e.target.value}))}
+                            >
+                                {players.map((player) => (player !== false ? (
+                                    <option key={player} value={player}>
+                                        {player}
+                                    </option>
+                                ) : null))}
+                            </Form.Control>
+                        </Form.Group>
+                        <Form.Group controlId='Le plus de dégâts : '>
+                            <Form.Label style={{color:"white"}}>Le plus de dégâts : </Form.Label>
+                            <Form.Control
+                                as='select'
+                                value={stats.moreDamage}
+                                onChange={(e) => setStats((prevStats) => ({...prevStats, moreDamage: e.target.value}))}
+                            >
+                                {players.map((player) => (player !== false ? (
+                                    <option key={player} value={player}>
+                                        {player}
+                                    </option>
+                                ) : null))}
+                            </Form.Control>
+                        </Form.Group>
+                        <Form.Group controlId="Le plus d'assists : ">
+                            <Form.Label style={{color:"white"}}>Le plus d'assists : </Form.Label>
+                            <Form.Control
+                                as='select'
+                                value={stats.moreAssist}
+                                onChange={(e) => setStats((prevStats) => ({...prevStats, moreAssist: e.target.value}))}
+                            >
+                                {players.map((player) => (player !== false ? (
+                                    <option key={player} value={player}>
+                                        {player}
+                                    </option>
+                                ) : null))}
+                            </Form.Control>
+                        </Form.Group>
+                        <p className='text-danger mt-1'>{validation}</p>
+                        <Button variant='danger' type='submit' className='ms-2'>
+                            Confirmer les stats
+                        </Button>
+                    </Form>
+                ) : (
+                    <div className="position-absolute top-50 start-50 translate-middle">
+                        <p className='text-danger mt-1'>En attente du joueur 1 : {players.at(0)}</p>
+                    </div>
+                ) : null}
         </>
     );
 }

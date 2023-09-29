@@ -4,12 +4,12 @@ import {VoteContext} from "../context/voteContext";
 import {GameContext} from "../context/gameContext";
 
 export default function VoteModal({ gameVal, setGameVal }) {
-    const {getTablePlayerRole, votePoint, putVotePointInBase} = useContext(VoteContext);
+    const {getTablePlayerRole, votePoint, statPoint, putVotePointInBase} = useContext(VoteContext);
     const {roleList} = useContext(GameContext);
 
     const [validation, setValidation] = useState("");
     const [players, setPlayers] = useState([]);
-    const [vote, setVote] = useState([-1, -1, -1, -1, -1]);
+    const [vote, setVote] = useState([]);
 
     const handleVoteClick = (index, roleIndex) => {
         const newVote = vote.map((c, i) => {
@@ -24,11 +24,13 @@ export default function VoteModal({ gameVal, setGameVal }) {
         e.preventDefault();
 
         try {
-            if (vote.includes(-1))
+            if (vote.indexOf(-1) !== players.indexOf(false))
                 return setValidation("Il manque un vote chef")
 
-            const pointFromVote = await votePoint(vote, gameVal.gameId);
-            await putVotePointInBase(gameVal.gameId, gameVal.playerInfo.id, pointFromVote);
+            const pointFromVote = await votePoint(gameVal.gameId, vote);
+            const pointFromStat = await statPoint(gameVal.gameId, gameVal.playerInfo.role, gameVal.playerInfo.name, gameVal.playerInfo.id);
+
+            await putVotePointInBase(gameVal.gameId, gameVal.playerInfo.id, pointFromVote + pointFromStat);
 
             setGameVal((prevGameVal) => ({
                 ...prevGameVal,
@@ -78,7 +80,7 @@ export default function VoteModal({ gameVal, setGameVal }) {
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {players.map((player, index) => (
+                                {players.map((player, index) => (player !== false ? (
                                     <tr key={index}>
                                         <td>{player}</td>
                                         {roles.map((role, roleIndex) => (
@@ -91,7 +93,7 @@ export default function VoteModal({ gameVal, setGameVal }) {
                                             </td>
                                         ))}
                                     </tr>
-                                ))}
+                                ) : null ))}
                                 </tbody>
                             </Table>
                         </Col>
