@@ -9,10 +9,12 @@ import Serpentin from "../assets/Serpentin.png";
 import Double from "../assets/Double-face.png";
 import Super from "../assets/Super-héros.png";
 import Amoureux from "../assets/Amoureux.png";
+import {RoleContext} from "../context/roleContext";
 
 export default function RoleModal({gameVal, setGameVal}) {
 
     const {getPlayerNameById, setGameState} = useContext(GameContext);
+    const {changeAim} = useContext(RoleContext);
 
     const [currentIndexRole, setCurrentIndexRole] = useState(0);
     const [validation, setValidation] = useState("");
@@ -75,12 +77,30 @@ export default function RoleModal({gameVal, setGameVal}) {
     }, [currentIndexRole, gameVal.gameState, gameVal.playerInfo.roleInfo]);
 
     useEffect(() => {
-        const intervalId = setInterval(() => {
+        const changeIdRoleDroide = setInterval(() => {
             if (gameVal.gameState === "Started")
                 setCurrentIndexRole((prevIndex) => (prevIndex + 1));
         }, (Math.floor(Math.random() * 5 + 5)) * 60 * 1000);
-        return () => clearInterval(intervalId);
+        return () => clearInterval(changeIdRoleDroide);
     }, [gameVal.gameState]);
+
+    useEffect(() => {
+        const intervalId = setInterval(async () => {
+            if (gameVal.gameState !== "Started")
+                return
+            const newAim = await changeAim(gameVal.gameId, gameVal.playerInfo.id)
+            speakText("Tu dois :" + newAim)
+            setGameVal((prevGameVal) => ({
+                ...prevGameVal,
+                playerInfo: {
+                    ...prevGameVal.playerInfo,
+                    aim: newAim,
+                }
+            }));
+        }, (Math.floor(Math.random() * 10 + 10)) * 60 * 1000);
+
+        return () => clearInterval(intervalId);
+    }, [gameVal.gameState, changeAim, gameVal.gameId, gameVal.playerInfo.id, setGameVal]);
 
     const rolePicturPath = (role) => {
         switch (role) {
@@ -115,7 +135,7 @@ export default function RoleModal({gameVal, setGameVal}) {
                 return "Super-héros : Gagner la game en ayant le plus de dégâts, d'assistances et de kills. Gravement pénalisé en cas de défaite"
             case "Amoureux":
                 return "Amoureux : Tu dois mourir chaque fois que ton amoureux décede, par compassion. Le nom du chanceux est "
-                    + gameVal.playerInfo.roleInfo.loverName + "🥰"
+                    + gameVal.playerInfo.roleInfo.loverName + " 🥰"
             default:
                 return null
         }
@@ -164,7 +184,8 @@ export default function RoleModal({gameVal, setGameVal}) {
                     >
                         {roleDescrpition(gameVal.playerInfo.role)}
                         <br/><br/>
-                        {currentIndexRole ? (gameVal.playerInfo.roleInfo.action[currentIndexRole % gameVal.playerInfo.roleInfo.action.length]) : null}
+                        {currentIndexRole && gameVal.playerInfo.role === "Droide"  ? (gameVal.playerInfo.roleInfo.action[currentIndexRole % gameVal.playerInfo.roleInfo.action.length]) : null}
+                        {gameVal.playerInfo.role === "Double-face" ? ("Tu dois : " + gameVal.playerInfo.roleInfo.aim) : null}
                     </p>
                     <button className="btn-primary">
                     </button>

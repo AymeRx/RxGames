@@ -44,7 +44,7 @@ export function RoleContextProvider(props) {
             return;
         try {
             const roleInfoRef = await ref(db, `games/${gameId}/player/${playerId}/roleInfo`);
-            await set(roleInfoRef, {aim : "Win"});
+            await set(roleInfoRef, {aim : Math.random() % 2 === 1 ? "Win" : "Loose"});
         } catch (error) {
             console.error("Init double face erreur : ", error);
         }
@@ -77,9 +77,21 @@ export function RoleContextProvider(props) {
         }
     };
 
+    const changeAim = async (gameId, playerId) => {
+        if (gameId === null || playerId === null)
+            return;
+        try {
+            const roleInfoRef = await ref(db, `games/${gameId}/player/${playerId}/roleInfo/aim`);
+            const aim = (await get(roleInfoRef)).val()
+            await set(roleInfoRef, aim === "Loose" ? "Win" : "Loose");
+            return aim === "Loose" ? "Win" : "Loose";
+        } catch (error) {
+            console.error("Change aim erreur : ", error);
+        }
+    }
 
     return (
-        <RoleContext.Provider value={{initAmoureux, initDoubleFace, initDroide, getPlayerRoleInfo}}>
+        <RoleContext.Provider value={{initAmoureux, initDoubleFace, initDroide, getPlayerRoleInfo, changeAim}}>
             {props.children}
         </RoleContext.Provider>
     )

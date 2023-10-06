@@ -51,15 +51,23 @@ export function VoteContextProvider(props) {
                 case "Droide":
                     return 0;
                 case "Serpentin":
-                    return stats.moreDeath === name && stats.moreDamage === name ? 2 : stats.moreDeath === name || stats.moreDamage === name ? 1 : 0;
+                    return stats.moreDeath === playerId && stats.moreDamage === name ? 2 : stats.moreDeath === playerId || stats.moreDamage === name ? 1 : 0;
                 case "Double-face":
                     const aimRef = await ref(db, `games/${gameId}/player/${playerId}/roleInfo/aim`)
                     const aim = (await get(aimRef)).val()
                     return aim === "Win" && stats.win ? 1 : 0;
                 case "Super-héros":
-                    return stats.moreDeath === name && stats.moreDamage === name ? 2 : stats.moreDeath === name || stats.moreDamage === name ? 1 : 0;
+                    let points = 0;
+                    points += stats.win ? 1 : -3;
+                    points += stats.moreKill ? 1 : 0;
+                    points += stats.moreAssist ? 1 : 0;
+                    points += stats.moreDamage ? 1 : 0;
+                    return points;
                 case "Amoureux":
-                    return
+                    const loverRef = await ref(db, `games/${gameId}/player/${playerId}/roleInfo/loverId`)
+                    const lover = (await get(loverRef)).val()
+                    const deathDif = Math.abs(stats.death[playerId] - stats.death[lover])
+                    return deathDif === 0 ? 2 : deathDif === 1 ? 1 : 0;
                 default:
                     return 84;
             }
