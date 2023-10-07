@@ -53,7 +53,7 @@ export default function CreateGameModal({ gameVal, setGameVal }) {
                             <div className="modal-content">
                                 <div className='modal-body'>
                                     <form onSubmit={handleForm} className='creater-game-form'>
-                                        <input placeholder="Nom du joueur" ref={nameRef} type="Text" />
+                                        <input placeholder="Nom du joueur" id={"name"} autoComplete={"username"} ref={nameRef} type="Text" />
                                         <p className='text-danger mt-1'>{validation}</p>
                                         <button onClick={closeModal} className="btn btn-primary">Rester dans ce lobby</button>
                                         <button className="btn btn-danger ms-2">Créer une nouvelle game</button>

@@ -5,7 +5,7 @@ import {GameContext} from "../context/gameContext";
 
 export default function VoteModal({ gameVal, setGameVal }) {
     const {getTablePlayerRole, votePoint, statPoint, putVotePointInBase} = useContext(VoteContext);
-    const {roleList} = useContext(GameContext);
+    const {roleList, setGameState} = useContext(GameContext);
 
     const [validation, setValidation] = useState("");
     const [players, setPlayers] = useState([]);
@@ -24,7 +24,11 @@ export default function VoteModal({ gameVal, setGameVal }) {
         e.preventDefault();
 
         try {
-            if (vote.indexOf(-1) !== players.indexOf(false))
+            const dupliVote = vote.copyWithin();
+
+            dupliVote[gameVal.playerInfo.id] = 10;
+
+            if (dupliVote.indexOf(-1) !== players.indexOf(false))
                 return setValidation("Il manque un vote chef")
 
             const pointFromVote = await votePoint(gameVal.gameId, vote);
@@ -32,6 +36,7 @@ export default function VoteModal({ gameVal, setGameVal }) {
 
             await putVotePointInBase(gameVal.gameId, gameVal.playerInfo.id, pointFromVote + pointFromStat);
 
+            setGameState(gameVal.gameId, "Results");
             setGameVal((prevGameVal) => ({
                 ...prevGameVal,
                 gameState: "Results",
@@ -80,20 +85,30 @@ export default function VoteModal({ gameVal, setGameVal }) {
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {players.map((player, index) => (player !== false ? (
-                                    <tr key={index}>
-                                        <td>{player}</td>
-                                        {roles.map((role, roleIndex) => (
-                                            <td key={roleIndex}>
-                                                <Form.Check
-                                                    type="radio"
-                                                    name={`vote-${index}`}
-                                                    onChange={() => handleVoteClick(index, roleIndex)}
-                                                />
-                                            </td>
-                                        ))}
-                                    </tr>
-                                ) : null ))}
+                                {players.map((player, index) => (player !== false && player !== gameVal.playerInfo.name ? (
+                                        <tr key={index}>
+                                            <td>{player}</td>
+                                            {roles.map((role, roleIndex) => (
+                                                <td key={roleIndex}>
+                                                    <Form.Check
+                                                        type="radio"
+                                                        name={`vote-${index}`}
+                                                        onChange={() => handleVoteClick(index, roleIndex)}
+                                                    />
+                                                </td>
+                                            ))}
+                                        </tr>
+                                    ) : (
+                                        <tr key={index}>
+                                            <td>{player}</td>
+                                            {roles.map((role, roleIndex) => (
+                                                <td key={roleIndex}>
+                                                    /
+                                                </td>
+                                            ))}
+                                        </tr>
+                                    )
+                                ))}
                                 </tbody>
                             </Table>
                         </Col>

@@ -92,23 +92,27 @@ export default function EndStatsModal({ gameVal, setGameVal }) {
                             ) : null))}
                         </Form.Control>
                     </Form.Group>
+                    <br/>
                     <Form.Group controlId='Nombre de morts : '>
                         <Form.Label style={{ color: "white" }}>Nombre de morts :</Form.Label>
                         {players.map((player, index) => (player !== false ? (
-                            <Form.Control
-                                key={player}
-                                type="number"
-                                placeholder={`Nombre de morts pour ${player}`}
-                                value={stats.death[index] || 0}
-                                onChange={(e) => {
-                                    const newDeaths = [...stats.death]; // Créez une copie du tableau
-                                    newDeaths[index] = parseInt(e.target.value) || 0;
-                                    setStats((prevStats) => ({
-                                        ...prevStats,
-                                        death: newDeaths,
-                                    }));
-                                }}
-                            />
+                            <Form.Group key={index} controlId={`Nombre de morts pour ${player}`}>
+                                <Form.Label style={{ color: "white" }}>Morts de {player} :</Form.Label>
+                                <Form.Control
+                                    key={player}
+                                    type="number"
+                                    placeholder={`Nombre de morts pour ${player}`}
+                                    value={stats.death[index]}
+                                    onChange={(e) => {
+                                        const newDeaths = [...stats.death]; // Créez une copie du tableau
+                                        newDeaths[index] = parseInt(e.target.value) || 0;
+                                        setStats((prevStats) => ({
+                                            ...prevStats,
+                                            death: newDeaths,
+                                        }));
+                                    }}
+                                />
+                            </Form.Group>
                         ) : null ))}
                     </Form.Group>
                     <Form.Group controlId='Le plus de morts : '>

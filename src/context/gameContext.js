@@ -43,9 +43,6 @@ export function GameContextProvider(props) {
                     rolesToAssign[1] = ["Super-héros", null];
             }
             shuffleArray(rolesToAssign);
-
-            rolesToAssign[0] = ["Double-face", initDoubleFace];
-
             for (let i = 0; i < 5; i++) {
                 const roleRef = ref(db, `games/${gameId}/player/${i}/role/`);
                 await set(roleRef, rolesToAssign[i][0]);

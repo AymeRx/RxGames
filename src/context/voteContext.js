@@ -16,7 +16,7 @@ export function VoteContextProvider(props) {
             for (let i = 0; i < 5; i++) {
                 const playerRef = await ref(db, `games/${gameId}/player/${i}`);
                 const player = await get(playerRef);
-                playersRole.push({name : player.val().name, role : player.val().role});
+                playersRole.push({name : player.val().name, role : player.val().role, points : player.val().points});
             }
             return playersRole;
         } catch (error) {
@@ -47,18 +47,22 @@ export function VoteContextProvider(props) {
 
             switch (role) {
                 case "Imposteur":
-                    return stats.win === true ? 1 : 0;
+                    return stats.win === true ? 0 : 2;
                 case "Droide":
-                    return 0;
+                    return stats.win === true ? 1 : 0;
                 case "Serpentin":
-                    return stats.moreDeath === playerId && stats.moreDamage === name ? 2 : stats.moreDeath === playerId || stats.moreDamage === name ? 1 : 0;
+                    let pointsSerpent = 0;
+                    pointsSerpent += stats.win ? 1 : 0;
+                    pointsSerpent += stats.moreDeath ? 1 : 0;
+                    pointsSerpent += stats.moreDamage ? 1 : 0;
+                    return pointsSerpent;
                 case "Double-face":
                     const aimRef = await ref(db, `games/${gameId}/player/${playerId}/roleInfo/aim`)
                     const aim = (await get(aimRef)).val()
-                    return aim === "Win" && stats.win ? 1 : 0;
+                    return (aim === "Win" && stats.win) || (aim === "Loose" && !stats.win) ? 1 : -1;
                 case "Super-héros":
                     let points = 0;
-                    points += stats.win ? 1 : -3;
+                    points += stats.win ? 1 : -2;
                     points += stats.moreKill ? 1 : 0;
                     points += stats.moreAssist ? 1 : 0;
                     points += stats.moreDamage ? 1 : 0;
@@ -67,7 +71,8 @@ export function VoteContextProvider(props) {
                     const loverRef = await ref(db, `games/${gameId}/player/${playerId}/roleInfo/loverId`)
                     const lover = (await get(loverRef)).val()
                     const deathDif = Math.abs(stats.death[playerId] - stats.death[lover])
-                    return deathDif === 0 ? 2 : deathDif === 1 ? 1 : 0;
+                    const winPoint = stats.win === true ? 1 : 0;
+                    return (deathDif === 0 ? 2 : deathDif === 1 ? 1 : 0) + winPoint;
                 default:
                     return 84;
             }

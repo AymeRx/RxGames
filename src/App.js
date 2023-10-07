@@ -9,6 +9,7 @@ import GameStateUpdater from "./components/GameStateUpdater"
 import RoleModal from "./components/RoleModal"
 import VoteModal from "./components/VoteModal";
 import EndStatsModal from "./components/EndStatsModal";
+import ResultsModal from "./components/ResultsModal";
 
 function App() {
 
@@ -32,6 +33,7 @@ function App() {
             <Navbar gameVal={gameVal} setGameVal={setGameVal} />
             <VoteModal gameVal={gameVal} setGameVal={setGameVal} />
             <EndStatsModal gameVal={gameVal} setGameVal={setGameVal} />
+            <ResultsModal gameVal={gameVal} setGameVal={setGameVal} />
             <CreateGameModal gameVal={gameVal} setGameVal={setGameVal} />
             <JoinGameModal gameVal={gameVal} setGameVal={setGameVal} />
             <Routes>
