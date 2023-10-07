@@ -5,7 +5,7 @@ import {GameContext} from "../context/gameContext";
 
 export default function VoteModal({ gameVal, setGameVal }) {
     const {getTablePlayerRole, votePoint, statPoint, putVotePointInBase} = useContext(VoteContext);
-    const {roleList, setGameState} = useContext(GameContext);
+    const {roleList} = useContext(GameContext);
 
     const [validation, setValidation] = useState("");
     const [players, setPlayers] = useState([]);
@@ -34,18 +34,9 @@ export default function VoteModal({ gameVal, setGameVal }) {
             const pointFromVote = await votePoint(gameVal.gameId, vote);
             const pointFromStat = await statPoint(gameVal.gameId, gameVal.playerInfo.role, gameVal.playerInfo.name, gameVal.playerInfo.id);
 
-            await putVotePointInBase(gameVal.gameId, gameVal.playerInfo.id, pointFromVote + pointFromStat);
+            await putVotePointInBase(gameVal.gameId, gameVal.playerInfo.id, pointFromVote + pointFromStat, players.indexOf(false));
 
-            setGameState(gameVal.gameId, "Results");
-            setGameVal((prevGameVal) => ({
-                ...prevGameVal,
-                gameState: "Results",
-                playerInfo: {
-                    ...prevGameVal.playerInfo,
-                    points: pointFromVote
-                }
-            }));
-            setValidation("");
+            setValidation("Vote Enregistré");
         } catch (error) {
             console.error(error);
             setValidation(error);
@@ -65,7 +56,7 @@ export default function VoteModal({ gameVal, setGameVal }) {
         }
         fetchData();
         setVote([-1, -1, -1, -1, -1]);
-    }, [gameVal.gameId, getTablePlayerRole]);
+    }, [gameVal.gameId, getTablePlayerRole, gameVal.gameState]);
 
     const roles = roleList.map(e => e[0]);
 

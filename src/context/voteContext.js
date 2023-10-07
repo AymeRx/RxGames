@@ -6,7 +6,7 @@ import {GameContext} from "./gameContext";
 export const VoteContext = createContext(null);
 
 export function VoteContextProvider(props) {
-    const {roleList} = useContext(GameContext);
+    const {roleList, setGameState} = useContext(GameContext);
 
     const getTablePlayerRole = async (gameId) => {
         if (gameId === null)
@@ -94,13 +94,30 @@ export function VoteContextProvider(props) {
         }
     };
 
-    const putVotePointInBase = async (gameId, playerId, point) => {
+    const putVotePointInBase = async (gameId, playerId, point, nbPlayer) => {
         if (gameId == null || playerId == null || point == null)
             return;
 
         try {
             const pointsRef = await ref(db, `games/${gameId}/player/${playerId}/points/`);
             await set(pointsRef, point);
+
+            const votedRef = await ref(db, `games/${gameId}/player/${playerId}/vote/`);
+            await set(votedRef, true);
+
+            const playersRef = await ref(db, `games/${gameId}/player/`);
+            const players = await get(playersRef);
+
+            let eryoneVoted = true;
+
+            for (let i = 0; i < nbPlayer; i++) {
+                if (players.val()[i].vote === false) {
+                    eryoneVoted = false;
+                    break;
+                }
+            }
+            if (eryoneVoted)
+                await setGameState(gameId, "Results")
         } catch (e) {
             console.error(e)
         }

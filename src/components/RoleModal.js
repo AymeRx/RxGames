@@ -41,6 +41,7 @@ export default function RoleModal({gameVal, setGameVal}) {
             switch (gameVal.playerInfo.role) {
                 case "Amoureux":
                     newRoleInfo.loverName = await getPlayerNameById(gameVal.gameId, newRoleInfo.loverId);
+                    console.log(newRoleInfo.loverName)
                     break;
                 default:
                     break;
@@ -54,7 +55,7 @@ export default function RoleModal({gameVal, setGameVal}) {
             }));
         });
         return () => {unsubscribeRoleInfo();};
-    }, [gameVal.gameId, gameVal.playerInfo.id, gameVal.playerInfo.role, setGameVal, getPlayerNameById]);
+    }, [gameVal.gameId, gameVal.playerInfo.id, gameVal.playerInfo.role, setGameVal, getPlayerNameById, gameVal.gameState]);
 
     const speakText = (text) => {
         if ('speechSynthesis' in window) {
@@ -68,13 +69,13 @@ export default function RoleModal({gameVal, setGameVal}) {
     };
 
     useEffect(() => {
-        if (currentIndexRole >= 0 && gameVal.gameState === "Started" && gameVal.playerInfo.roleInfo) {
+        if (currentIndexRole >= 0 && gameVal.gameState === "Started" && gameVal.playerInfo.role === "Droide" && gameVal.playerInfo.roleInfo) {
             const actions = gameVal.playerInfo.roleInfo.action;
             if (actions && currentIndexRole >= 1) {
                 speakText(actions[currentIndexRole % actions.length]);
             }
         }
-    }, [currentIndexRole, gameVal.gameState, gameVal.playerInfo.roleInfo]);
+    }, [currentIndexRole, gameVal.gameState, gameVal.playerInfo.roleInfo, gameVal.playerInfo.role]);
 
     useEffect(() => {
         const changeIdRoleDroide = setInterval(() => {
@@ -86,7 +87,7 @@ export default function RoleModal({gameVal, setGameVal}) {
 
     useEffect(() => {
         const intervalId = setInterval(async () => {
-            if (gameVal.gameState !== "Started")
+            if (gameVal.gameState !== "Started" && gameVal.playerInfo.role === "Double-Face")
                 return
             const newAim = await changeAim(gameVal.gameId, gameVal.playerInfo.id)
             speakText("Tu dois :" + newAim)
@@ -100,7 +101,7 @@ export default function RoleModal({gameVal, setGameVal}) {
         }, (Math.floor(Math.random() * 10 + 10)) * 60 * 1000);
 
         return () => clearInterval(intervalId);
-    }, [gameVal.gameState, changeAim, gameVal.gameId, gameVal.playerInfo.id, setGameVal]);
+    }, [gameVal.gameState, changeAim, gameVal.gameId, gameVal.playerInfo.id, setGameVal, gameVal.playerInfo.role]);
 
     const rolePicturPath = (role) => {
         switch (role) {

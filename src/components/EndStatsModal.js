@@ -57,7 +57,7 @@ export default function EndStatsModal({ gameVal, setGameVal }) {
             }
         }
         fetchData();
-    }, [gameVal.gameId, getTablePlayerRole]);
+    }, [gameVal.gameId, getTablePlayerRole, gameVal.gameState]);
 
     return (
         <>
