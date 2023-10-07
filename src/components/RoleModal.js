@@ -1,7 +1,8 @@
 import React, {useContext, useEffect, useState} from 'react'
 import {onValue, ref} from "firebase/database";
 import {db} from "../firebase-config";
-import { GameContext } from '../context/gameContext';
+import {GameContext} from '../context/gameContext';
+import {RoleContext} from "../context/roleContext";
 
 import Imposteur from "../assets/Imposteur.png";
 import Droide from "../assets/Droide.png";
@@ -9,7 +10,6 @@ import Serpentin from "../assets/Serpentin.png";
 import Double from "../assets/Double-face.png";
 import Super from "../assets/Super-héros.png";
 import Amoureux from "../assets/Amoureux.png";
-import {RoleContext} from "../context/roleContext";
 
 export default function RoleModal({gameVal, setGameVal}) {
 
@@ -162,6 +162,16 @@ export default function RoleModal({gameVal, setGameVal}) {
         <>
             {gameVal.playerInfo.role != null && gameVal.gameState === "Started" ? (
                 <div className="position-fixed top-0 vw-100 vh-100">
+                    <div style={{
+                        fontSize: "50px",
+                        color: "white",
+                        position: 'absolute',
+                        top: '6vh',
+                        left: '3vw'
+                    }}
+                    >
+                        Jeu en cours :
+                    </div>
                     <img
                         src={rolePicturPath(gameVal.playerInfo.role)}
                         alt={gameVal.playerInfo.role}
@@ -169,7 +179,7 @@ export default function RoleModal({gameVal, setGameVal}) {
                             maxHeight: "66vh",
                             maxWidth: "33vw",
                             position: 'absolute',
-                            top: '10vh',
+                            top: '15vh',
                             left: '5vw',
                         }}
                     />
@@ -187,8 +197,6 @@ export default function RoleModal({gameVal, setGameVal}) {
                         {currentIndexRole && gameVal.playerInfo.role === "Droide"  ? (gameVal.playerInfo.roleInfo.action[currentIndexRole % gameVal.playerInfo.roleInfo.action.length]) : null}
                         {gameVal.playerInfo.role === "Double-face" ? ("Tu dois : " + gameVal.playerInfo.roleInfo.aim) : null}
                     </p>
-                    <button className="btn-primary">
-                    </button>
                     <div className="position-absolute top-50 start-50 translate-middle">
                         <p className='text-danger mt-1'>{validation}</p>
                         <button onClick={() => endGame()} className="btn btn-danger ms-2">Fin de partie</button>

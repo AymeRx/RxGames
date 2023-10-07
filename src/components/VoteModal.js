@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import { Table, Form, Container, Row, Col } from 'react-bootstrap';
+import {Table, Form, Container, Row, Col} from 'react-bootstrap';
 import {VoteContext} from "../context/voteContext";
 import {GameContext} from "../context/gameContext";
 
@@ -73,6 +73,20 @@ export default function VoteModal({ gameVal, setGameVal }) {
         <>
             {gameVal.gameState === "Vote" ? (
                 <Container>
+                    <div style={{
+                        fontSize: "50px",
+                        color: "white",
+                        position: 'absolute',
+                        top: '6vh',
+                        left: '3vw'
+                    }}
+                    >
+                        Votes :
+                    </div>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
                     <Row>
                         <Col>
                             <Table striped bordered hover>
@@ -98,7 +112,7 @@ export default function VoteModal({ gameVal, setGameVal }) {
                                                 </td>
                                             ))}
                                         </tr>
-                                    ) : (
+                                    ) : player !== false ? (
                                         <tr key={index}>
                                             <td>{player}</td>
                                             {roles.map((role, roleIndex) => (
@@ -107,7 +121,7 @@ export default function VoteModal({ gameVal, setGameVal }) {
                                                 </td>
                                             ))}
                                         </tr>
-                                    )
+                                    ) : null
                                 ))}
                                 </tbody>
                             </Table>

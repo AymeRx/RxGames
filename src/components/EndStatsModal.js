@@ -63,6 +63,21 @@ export default function EndStatsModal({ gameVal, setGameVal }) {
         <>
             {gameVal.gameState === 'End' && stats.death != null ? gameVal.playerInfo.id === 0 ? (
                 <Form onSubmit={handleForm} className='creater-game-form'>
+                    <div style={{
+                        fontSize: "50px",
+                        color: "white",
+                        position: 'absolute',
+                        top: '8vh',
+                        left: '2vw'
+                    }}
+                    >
+                        Le joueur 1 doit rentrer les stats (pour les points) :
+                    </div>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
                     <Form.Group controlId='Victoire ou defaite : '>
                         <Form.Label style={{color:"white"}}>Victoire ou defaite : </Form.Label>
                         <Form.Control

@@ -57,6 +57,16 @@ export default function JoinGameModal({ gameVal, setGameVal }) {
         <>
             {modalState.joinGameModal && (
                 <div className="position-fixed top-0 vw-100 vh-100">
+                    <div style={{
+                        fontSize: "50px",
+                        color: "white",
+                        position: 'absolute',
+                        top: '6vh',
+                        left: '3vw'
+                    }}
+                    >
+                        Rejoindre une Partie avec un code :
+                    </div>
                     <div onClick={closeModal} className="w-100 h-100 bg-dark bg-opacity-75"></div>
                     <div className="position-absolute top-50 start-50 translate-middle">
                         <div className="modal-dialog">
