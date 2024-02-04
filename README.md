@@ -43,8 +43,7 @@ Follow these steps to get AmongLegends up and running on your system:
 ## Usage
 
 1. **Create a Game:**
-   - Navigate to the "Create Game" section.
-   - Set the game parameters, including roles for each player.
+   - Navigate to the "Créer une game" section.
 
 2. **Invite Friends:**
    - Share the generated game code with your friends.
