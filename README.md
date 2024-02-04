@@ -1,70 +1,67 @@
-# Getting Started with Create React App
+# AmongLegends
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+AmongLegends is a thrilling project built using React and Firebase, designed to bring the excitement of Among Us into the League of Legends world. This unique creation allows you to set up a custom game mode within League of Legends, complete with designated roles for each player in a five-stack.
 
-## Available Scripts
+## Getting Started
 
-In the project directory, you can run:
+Follow these steps to get AmongLegends up and running on your system:
 
-### `npm start`
+1. **Clone the Repository:**
+   ```bash
+   git clone git@github.com:Tchips46tek/Among-Legends.git
+   ```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+2. **Install Dependencies:**
+   ```bash
+   cd AmongLegends
+   npm install
+   ```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+3. **Firebase Configuration:**
+   - Create a Firebase project on the [Firebase Console](https://console.firebase.google.com/).
+   - Obtain your Firebase configuration settings.
+   - Replace the placeholder values in `src/firebase-config.js` with your Firebase configuration.
 
-### `npm test`
+4. **Start the Application:**
+   ```bash
+   npm start
+   ```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+   The application should now be running on `http://localhost:3000`.
 
-### `npm run build`
+## Features
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- **Custom Game Mode:**
+  AmongLegends allows you to create a unique game mode within League of Legends, bringing the excitement of social deduction games like Among Us to the League universe.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- **Five-Stack Roles:**
+  Assign specific roles to each player in your five-stack, adding an extra layer of strategy and intrigue to your League of Legends matches.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- **Firebase Integration:**
+  Utilizing Firebase for real-time communication, AmongLegends ensures a seamless and synchronized experience for all players involved.
 
-### `npm run eject`
+## Usage
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+1. **Create a Game:**
+   - Navigate to the "Create Game" section.
+   - Set the game parameters, including roles for each player.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+2. **Invite Friends:**
+   - Share the generated game code with your friends.
+   - Ensure that all players join the lobby.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+3. **Start the Game:**
+   - Once the lobby is full, start the game.
+   - Follow the assigned roles and enjoy the AmongLegends experience within League of Legends.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## Contributing
 
-## Learn More
+Feel free to contribute to the project by opening issues, submitting pull requests, or providing feedback. Together, let's make AmongLegends even more legendary!
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## License
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-### Code Splitting
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Enjoy your AmongLegends experience and may your League of Legends matches never be the same again!
